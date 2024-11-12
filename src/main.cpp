@@ -14,8 +14,7 @@
 uint32_t draw_buf[DRAW_BUF_SIZE / 4];
 
 LGFX tft;
-int16_t x;
-int16_t y;
+
 #if LV_USE_LOG != 0
 void my_print(lv_log_level_t level, const char *buf) {
     LV_UNUSED(level);
@@ -48,8 +47,6 @@ void my_touchpad_read(lv_indev_t *indev, lv_indev_data_t *data) {
         data->state = LV_INDEV_STATE_PRESSED;
         data->point.x = touchX;
         data->point.y = touchY;
-        x = touchX;
-        y = touchY;
 #if 1
         Serial.printf("x: %03d, y: %03d\n", data->point.x, data->point.y);
 #endif
@@ -87,6 +84,7 @@ void setup() {
     Serial.println("Setup done");
 
     ui_init();
+    lv_tick_set_cb((lv_tick_get_cb_t)millis);
 }
 
 void loop() {
