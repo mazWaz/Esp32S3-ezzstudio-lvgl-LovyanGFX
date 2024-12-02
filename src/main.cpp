@@ -16,7 +16,8 @@ uint32_t draw_buf[DRAW_BUF_SIZE / 4];
 LGFX tft;
 
 #if LV_USE_LOG != 0
-void my_print(lv_log_level_t level, const char *buf) {
+void my_print(lv_log_level_t level, const char *buf)
+{
     LV_UNUSED(level);
     Serial.println(buf);
     Serial.flush();
@@ -24,7 +25,8 @@ void my_print(lv_log_level_t level, const char *buf) {
 #endif
 
 /* LVGL calls it when a rendered image needs to copied to the display. */
-void my_disp_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
+void my_disp_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map)
+{
     uint32_t w = lv_area_get_width(area);
     uint32_t h = lv_area_get_height(area);
     tft.startWrite();
@@ -37,23 +39,25 @@ void my_disp_flush(lv_display_t *disp, const lv_area_t *area, uint8_t *px_map) {
 }
 
 /* Read the touchpad. */
-void my_touchpad_read(lv_indev_t *indev, lv_indev_data_t *data) {
+void my_touchpad_read(lv_indev_t *indev, lv_indev_data_t *data)
+{
     uint16_t touchX, touchY;
     bool touched = tft.getTouch(&touchX, &touchY);
 
-    if (!touched) {
+    if (!touched)
+    {
         data->state = LV_INDEV_STATE_RELEASED;
-    } else {
+    }
+    else
+    {
         data->state = LV_INDEV_STATE_PRESSED;
         data->point.x = touchX;
         data->point.y = touchY;
-#if 1
-        Serial.printf("x: %03d, y: %03d\n", data->point.x, data->point.y);
-#endif
     }
 }
 
-void setup() {
+void setup()
+{
     // put your setup code here, to run once:
     Serial.begin(115200);
 
@@ -74,7 +78,6 @@ void setup() {
     lv_display_set_flush_cb(disp, my_disp_flush);
     lv_display_set_buffers(disp, draw_buf, NULL, sizeof(draw_buf),
                            LV_DISPLAY_RENDER_MODE_PARTIAL);
-
     /* Initialize the (dummy) input device driver. */
     lv_indev_t *indev = lv_indev_create();
     lv_indev_set_type(
@@ -84,11 +87,11 @@ void setup() {
     Serial.println("Setup done");
 
     ui_init();
-    lv_tick_set_cb((lv_tick_get_cb_t)millis);
 }
 
-void loop() {
-    lv_task_handler(); /* Let LVGL do its work */
+void loop()
+{
+    lv_timer_handler(); /* let the GUI do its work */
     ui_tick();
     delay(5);
 }
